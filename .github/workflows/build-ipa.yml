@@ -22,15 +22,16 @@ jobs:
           fi
           xcodebuild -version
 
-      - name: Build Archive (Without Signing)
+      - name: Compile App (Without Signing)
         run: |
-          mkdir -p build
-          xcodebuild clean archive \
+          mkdir -p build/derivedData
+          xcodebuild build \
             -project VKClient.xcodeproj \
             -scheme VKClient \
             -configuration Release \
+            -sdk iphoneos \
             -destination "generic/platform=iOS" \
-            -archivePath build/VKClient.xcarchive \
+            -derivedDataPath build/derivedData \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
@@ -39,7 +40,13 @@ jobs:
       - name: Package IPA
         run: |
           mkdir -p Payload
-          cp -r "build/VKClient.xcarchive/Products/Applications/VKClient.app" Payload/
+          APP_PATH=$(find build/derivedData -name "VKClient.app" -type d | head -n 1)
+          echo "Found app at: $APP_PATH"
+          if [ -z "$APP_PATH" ]; then
+            echo "ERROR: VKClient.app not found in build directory!"
+            exit 1
+          fi
+          cp -r "$APP_PATH" Payload/
           zip -r VKClient-iOS13.ipa Payload
           ls -lh VKClient-iOS13.ipa
 
