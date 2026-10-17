@@ -22,6 +22,15 @@ jobs:
           fi
           xcodebuild -version
 
+      - name: Prepare Swift Files
+        run: |
+          mkdir -p VKClient
+          # Автоматически находим и собираем все .swift файлы и Info.plist в VKClient/
+          find . -name "*.swift" -not -path "./build/*" -exec cp {} VKClient/ \; 2>/dev/null || true
+          find . -name "Info.plist" -not -path "./build/*" -exec cp {} VKClient/ \; 2>/dev/null || true
+          echo "Files in VKClient:"
+          ls -la VKClient/
+
       - name: Compile App (Without Signing)
         run: |
           mkdir -p build/derivedData
