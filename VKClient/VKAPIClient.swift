@@ -51,6 +51,14 @@ final class VKAPIClient {
                     if let reason = error.userInfo["NSURLErrorNetworkUnavailableReasonKey"] {
                         message += "\nNetwork reason: \(reason)"
                     }
+                    for source in [error, underlying].compactMap({ $0 }) {
+                        for key in ["_NSURLErrorNWPathKey", "NSURLErrorNetworkUnavailableReasonKey",
+                                    "_kCFStreamErrorCodeKey", "_kCFStreamErrorDomainKey"] {
+                            if let value = source.userInfo[key] {
+                                message += "\n\(key): \(value)"
+                            }
+                        }
+                    }
                     result = DiagnosticResult(endpoint: URL(string: urlString)!.host ?? urlString,
                                               details: message, success: false)
                 } else if let http = response as? HTTPURLResponse {
