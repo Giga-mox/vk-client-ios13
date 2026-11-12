@@ -1,0 +1,30 @@
+name: Build iOS 13 IPA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        run: xcodegen generate
+      - name: Build unsigned iOS app
+        run: |
+          xcodebuild -project VKClient.xcodeproj -scheme VKClient -configuration Release -sdk iphoneos -derivedDataPath "$RUNNER_TEMP/DerivedData" CODE_SIGNING_ALLOWED=NO build
+      - name: Package unsigned IPA
+        run: |
+          mkdir -p "$RUNNER_TEMP/ipa/Payload"
+          cp -R "$RUNNER_TEMP/DerivedData/Build/Products/Release-iphoneos/VKClient.app" "$RUNNER_TEMP/ipa/Payload/"
+          cd "$RUNNER_TEMP/ipa"
+          zip -qr "$GITHUB_WORKSPACE/VKClient-iOS13-unsigned.ipa" Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VKClient-iOS13-unsigned
+          path: VKClient-iOS13-unsigned.ipa
+          retention-days: 14
