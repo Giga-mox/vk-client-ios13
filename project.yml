@@ -1,0 +1,41 @@
+name: VKClient
+options:
+  bundleIdPrefix: com.gigamox
+settings:
+  base:
+    IPHONEOS_DEPLOYMENT_TARGET: "13.0"
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1"
+targets:
+  VKClient:
+    type: application
+    platform: iOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: VKClient
+    info:
+      path: VKClient/Info.plist
+      properties:
+        CFBundleDisplayName: "VK Client"
+        CFBundleName: "VK Client"
+        CFBundleIdentifier: com.gigamox.vkclient13
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSRequiresIPhoneOS: true
+        UILaunchStoryboardName: ""
+        UIRequiresFullScreen: false
+        NSPhotoLibraryUsageDescription: "Выбор фотографий для публикаций во ВКонтакте."
+        NSCameraUsageDescription: "Добавление снимков в сообщения и публикации ВКонтакте."
+        NSMicrophoneUsageDescription: "Запись видео и аудио при использовании сайта ВКонтакте."
+        UIStatusBarStyle: UIStatusBarStyleDefault
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gigamox.vkclient13
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGNING_ALLOWED: NO
+schemes:
+  VKClient:
+    build:
+      targets:
+        VKClient: all
