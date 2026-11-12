@@ -1,36 +1,31 @@
-# VK Client for iOS 13
+# VK Client iOS 13 — Native prototype v0.2
 
-Experimental VK client for iOS 13.0+ (UIKit + WKWebView).
+Native Swift/UIKit prototype for iOS 13.0+, targeted at iPhone 6s Plus (iOS 13.6).
 
-## Version 0.1
-- Opens the official VK mobile website, `https://m.vk.com/`.
-- VK ID login is handled by the website. No password is sent to an independent server.
-- Persistent WKWebView cookies/session stored on-device.
-- Back / forward / home / refresh / system share controls.
-- Supports VK links that open in a new window.
-- iOS 13 compatible and built with Swift 5 / UIKit.
-- No app ID or developer token required for this web-based version.
+## What works in the current source
+- Native UIKit home screen, **no WKWebView dependency**.
+- Direct HTTPS connectivity test with `URLSession` against the official VK API.
+- Correct distinction between VK API error 15 (connection succeeds, token required) and network failure.
+- Friendly diagnostic and retry.
 
-**Limitations:** This is a web-based MVP, not a fully native VK API implementation. Login, video, media upload and other features have not yet been tested on an actual iOS 13 device; some website or VK ID functionality can be limited by the legacy WebKit engine. Push notifications are not implemented.
+## What does NOT work yet
+- **No login, messages, feed, profile or other authenticated VK features.** The login button explains the current requirements; it does not impersonate a working login flow.
+- No VK ID client ID has been configured and no account token is collected.
+- The installed IPA with `ldid` is not guaranteed to have working Apple Associated Domains / Universal Links.
+- GitHub Pages landing page is NOT a complete OAuth callback implementation.
 
-## Build on GitHub
-1. Open the **Actions** tab.
-2. Select **Build iOS 13 IPA** and click **Run workflow**, or let a push to main trigger a build.
-3. Open the finished run and download the `VKClient-iOS13-unsigned` artifact.
-4. Extract the ZIP archive to get `VKClient-iOS13-unsigned.ipa`.
-5. Sign and install the IPA with your own sideloading workflow. This build is **unsigned**.
+## Build an unsigned IPA
+1. Open [Actions](https://github.com/Giga-mox/vk-client-ios13/actions).
+2. Open **Build iOS 13 IPA**.
+3. Run workflow or inspect the latest push.
+4. After a **successful** build, download the `VKClient-iOS13-unsigned` artifact.
+5. Extract the ZIP, sign and install `VKClient-iOS13-unsigned.ipa` using your existing jailbreak IPA Signer.
 
-## Local build (Mac)
-Install Xcode and XcodeGen. Run:
-```sh
-xcodegen generate
-xcodebuild -project VKClient.xcodeproj -scheme VKClient -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO build
-```
+The workflow's success and on-device compatibility still need to be verified.
 
-## Security
-Never enter VK credentials into GitHub Actions or the repository. This app embeds the official VK pages and persists the web session locally. Source code is provided for inspection. Not affiliated with VK.
+## Authentication path
+VK ID SDK 2.9.5 predates SDK 3.0.0 (which raised minimum iOS to 15); SDK 2.x uses Swift 5.9 and Xcode 15+. Before integration, register a valid client, confirm redirect requirements and test whether WebView-only authorization in the older SDK can complete under iOS 13 WebKit. Never post a client secret, VK access token, password, or signing certificate to a public repo.
 
-## Roadmap
-- Validate the iOS 13.6 login flow and mobile site features on hardware.
-- Add optional native screens with VK ID authorization and officially supported VK API methods.
-- Better error handling, in-app navigation and media management.
+Read [VK_ID_SETUP.md](VK_ID_SETUP.md).
+
+Not affiliated with VK.
