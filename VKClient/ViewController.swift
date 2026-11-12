@@ -92,31 +92,20 @@ final class ViewController: UIViewController {
     }
 
     @objc private func checkConnection() {
-        stateLabel.text = "Проверяем VK API..."
-        detailsLabel.text = "Адрес: api.vk.com. Используется URLSession."
+        stateLabel.text = "Проверяем HTTPS..."
+        detailsLabel.text = "Проверяем VK, Apple и Google через URLSession."
         activity.startAnimating()
         checkButton.isEnabled = false
 
-        VKAPIClient.shared.probe { [weak self] result in
+        VKAPIClient.shared.diagnose { [weak self] results in
             guard let self = self else { return }
             self.activity.stopAnimating()
             self.checkButton.isEnabled = true
-            switch result {
-            case let .reachable(code, message):
-                if code == 15 {
-                    self.stateLabel.text = "VK API доступен"
-                    self.detailsLabel.text = "Получена ожидаемая ошибка VK №15: нужен токен. Подключение работает, но авторизации ещё нет."
-                } else {
-                    self.stateLabel.text = "VK API ответил"
-                    self.detailsLabel.text = "Код VK: \(code). \(message)"
-                }
-            case let .unexpected(message):
-                self.stateLabel.text = "Неожиданный ответ"
-                self.detailsLabel.text = message
-            case let .failed(message):
-                self.stateLabel.text = "Ошибка соединения"
-                self.detailsLabel.text = message
-            }
+            let successes = results.filter { $0.success }.count
+            self.stateLabel.text = successes == results.count ? "HTTPS доступен" : "Диагностика: \(successes)/\(results.count)"
+            self.detailsLabel.text = results.map {
+                "\($0.success ? "OK" : "Ошибка") — \($0.endpoint)\n\($0.details)"
+            }.joined(separator: "\n\n")
         }
     }
 
