@@ -19,8 +19,8 @@ targets:
         CFBundleDisplayName: "VK Client"
         CFBundleName: "VK Client"
         CFBundleIdentifier: com.gigamox.vkclient13
-        CFBundleShortVersionString: "0.2.0"
-        CFBundleVersion: "2"
+        CFBundleShortVersionString: "0.2.1"
+        CFBundleVersion: "3"
         LSRequiresIPhoneOS: true
         UILaunchStoryboardName: ""
         UIRequiresFullScreen: false
@@ -28,6 +28,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.gigamox.vkclient13
+        CODE_SIGN_ENTITLEMENTS: VKClient.entitlements
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_STYLE: Manual
         CODE_SIGNING_ALLOWED: NO
